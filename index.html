@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>银信局写信员</title>
+    <link rel="stylesheet" href="./src/styles.css" />
+  </head>
+  <body>
+    <div id="root">
+      <main style="padding:24px;font-family:serif;color:#261d16;background:#f5ecd9;min-height:100vh;">
+        银信局正在开柜，如长时间停在这里，请确认浏览器允许加载本地脚本。
+      </main>
+    </div>
+    <script>
+      window.addEventListener("error", function (event) {
+        var root = document.getElementById("root");
+        if (!root) return;
+        root.innerHTML =
+          '<main style="padding:24px;font-family:serif;color:#261d16;background:#f5ecd9;min-height:100vh;line-height:1.8;">' +
+          "<h1>页面脚本出错了</h1>" +
+          "<p>请把下面这行错误发给我，我可以继续修：</p>" +
+          "<pre style=\"white-space:pre-wrap;background:#fff8e8;border:1px solid #d6c2a0;padding:12px;\">" +
+          String(event.message || event.error || "未知错误") +
+          "</pre></main>";
+      });
+    </script>
+    <script defer src="./src/static-app.js"></script>
+  </body>
+</html>

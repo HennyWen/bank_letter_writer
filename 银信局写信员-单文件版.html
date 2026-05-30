@@ -1,0 +1,1957 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>银信局写信员</title>
+    <style>:root {
+  font-family: "Noto Serif SC", "Songti SC", "SimSun", serif;
+  color: #261d16;
+  background: #d9d0bd;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  --ink: #261d16;
+  --muted: #6f6254;
+  --paper: #f5ecd9;
+  --paper-strong: #fff8e8;
+  --line: rgba(63, 45, 31, 0.22);
+  --red: #8d2f25;
+  --teal: #236765;
+  --green: #46754d;
+  --gold: #b48335;
+  --shadow: 0 18px 50px rgba(56, 38, 21, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    linear-gradient(rgba(84, 62, 39, 0.18) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(84, 62, 39, 0.12) 1px, transparent 1px),
+    radial-gradient(circle at 20% 15%, rgba(255, 248, 219, 0.65), transparent 35%),
+    #d9d0bd;
+  background-size: 36px 36px, 36px 36px, auto, auto;
+}
+
+button,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: 1px solid var(--line);
+  background: #efe2c5;
+  color: var(--ink);
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  box-shadow: inset 0 -2px 0 rgba(61, 42, 21, 0.09);
+}
+
+button:hover {
+  background: #f7e8c8;
+}
+
+button:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+input {
+  font: inherit;
+}
+
+.app {
+  width: min(1440px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 18px;
+}
+
+.topbar {
+  height: 82px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  background: rgba(252, 244, 224, 0.88);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px 18px;
+  box-shadow: var(--shadow);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.seal {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff8e8;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  border: 2px solid rgba(255, 248, 232, 0.8);
+}
+
+.brand p,
+.brand h1 {
+  margin: 0;
+}
+
+.brand p,
+.eyebrow {
+  color: var(--red);
+  font-size: 13px;
+  letter-spacing: 0;
+}
+
+.brand h1 {
+  font-size: 25px;
+  line-height: 1.1;
+}
+
+.metrics {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.metrics > div {
+  min-width: 108px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: rgba(255, 250, 235, 0.7);
+  color: #3d3127;
+}
+
+.tool-toggle {
+  min-width: 84px;
+  background: #f6edda;
+}
+
+.dialogue-layout {
+  display: grid;
+  grid-template-columns: 244px minmax(420px, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+  min-height: calc(100vh - 116px);
+}
+
+.dialogue-layout.paper-open {
+  grid-template-columns: 220px minmax(430px, 0.9fr) minmax(390px, 0.78fr);
+}
+
+.queue-rail,
+.dialogue-stage,
+.letter-panel,
+.summary-panel {
+  background: rgba(252, 244, 224, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.queue-rail,
+.dialogue-stage,
+.letter-panel {
+  padding: 16px;
+  min-height: 0;
+}
+
+.dialogue-stage {
+  position: relative;
+  min-height: 700px;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  background:
+    linear-gradient(to bottom, rgba(32, 81, 79, 0.1), rgba(74, 49, 30, 0.08)),
+    linear-gradient(to bottom, transparent 0 58%, rgba(64, 43, 25, 0.2) 58% 100%),
+    rgba(252, 244, 224, 0.94);
+}
+
+.panel-title {
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.queue-card {
+  min-height: 76px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: rgba(255, 250, 235, 0.64);
+}
+
+.queue-card.active {
+  background: #f5e2ba;
+  border-color: rgba(141, 47, 37, 0.35);
+}
+
+.queue-card div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.queue-card strong {
+  font-size: 17px;
+}
+
+.queue-card span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.queue-card b {
+  display: inline-flex;
+  margin-top: 10px;
+  color: var(--red);
+  font-size: 13px;
+}
+
+.queue-scene {
+  position: relative;
+  min-height: calc(100vh - 190px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  border: 1px solid rgba(63, 45, 31, 0.18);
+  border-radius: 8px;
+  background:
+    linear-gradient(to bottom, rgba(255, 248, 232, 0.78), rgba(221, 207, 177, 0.76)),
+    repeating-linear-gradient(to bottom, transparent 0 72px, rgba(63, 45, 31, 0.06) 73px);
+}
+
+.queue-scene::after {
+  content: "";
+  display: block;
+  height: 980px;
+}
+
+.counter-marker {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  right: 14px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(141, 47, 37, 0.28);
+  border-radius: 6px;
+  color: var(--red);
+  background: rgba(245, 226, 186, 0.72);
+  font-weight: 800;
+}
+
+.queue-line {
+  position: absolute;
+  top: 74px;
+  bottom: 18px;
+  left: 50%;
+  width: 2px;
+  border-left: 2px dashed rgba(63, 45, 31, 0.18);
+}
+
+.queue-person {
+  position: absolute;
+  left: 50%;
+  top: calc(78px + var(--step) * 104px);
+  width: min(196px, calc(100% - 28px));
+  transform: translateX(-50%);
+  display: grid;
+  grid-template-columns: 76px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.queue-person.at-counter {
+  top: 70px;
+}
+
+.queue-character {
+  position: relative;
+  width: 76px;
+  display: grid;
+  justify-items: center;
+}
+
+.queue-image-placeholder {
+  width: 62px;
+  height: 62px;
+  border: 2px dashed rgba(38, 29, 22, 0.25);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 248, 232, 0.98) 0 18%, transparent 19%),
+    radial-gradient(circle at 50% 50%, rgba(35, 103, 101, 0.34) 0 50%, transparent 51%),
+    linear-gradient(160deg, rgba(35, 103, 101, 0.18), rgba(141, 47, 37, 0.08)),
+    rgba(255, 248, 232, 0.86);
+  display: grid;
+  place-items: center;
+  align-content: center;
+  color: var(--muted);
+  box-shadow:
+    inset 0 -8px 0 rgba(38, 29, 22, 0.08),
+    0 6px 14px rgba(56, 38, 21, 0.14);
+}
+
+.queue-image-placeholder.configured {
+  object-fit: cover;
+  padding: 0;
+  border-style: solid;
+  background: #f8edd4;
+}
+
+.queue-image-placeholder span {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff8e8;
+  font-size: 20px;
+  font-weight: 800;
+}
+
+.queue-image-placeholder small {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  margin-top: -8px;
+  font-size: 9px;
+}
+
+.queue-floor-shadow {
+  width: 58px;
+  height: 9px;
+  margin-top: -1px;
+  border-radius: 50%;
+  background: rgba(38, 29, 22, 0.16);
+  filter: blur(3px);
+}
+
+.queue-nameplate {
+  width: 100%;
+  min-height: 62px;
+  padding: 8px 9px;
+  border: 1px solid rgba(63, 45, 31, 0.18);
+  border-radius: 6px;
+  background: rgba(255, 250, 235, 0.9);
+  box-shadow: 0 8px 20px rgba(56, 38, 21, 0.08);
+}
+
+.queue-person.at-counter .queue-nameplate {
+  background: #f5e2ba;
+  border-color: rgba(141, 47, 37, 0.36);
+}
+
+.queue-nameplate strong,
+.queue-nameplate span,
+.queue-nameplate b {
+  display: block;
+}
+
+.queue-nameplate strong {
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.queue-nameplate span {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.queue-nameplate b {
+  margin-top: 6px;
+  color: var(--red);
+  font-size: 12px;
+}
+
+.queue-nameplate i {
+  display: block;
+  height: 7px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: rgba(62, 46, 30, 0.14);
+  overflow: hidden;
+}
+
+.queue-nameplate i em {
+  display: block;
+  width: var(--patience);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--green);
+}
+
+.patience {
+  height: 8px;
+  margin-top: 12px;
+  border-radius: 999px;
+  background: rgba(62, 46, 30, 0.15);
+  overflow: hidden;
+}
+
+.patience i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.patience .good {
+  background: var(--green);
+}
+
+.patience .warn {
+  background: var(--gold);
+}
+
+.patience .bad {
+  background: var(--red);
+}
+
+.npc-scene {
+  position: absolute;
+  inset: 0 0 236px;
+  display: grid;
+  grid-template-columns: minmax(240px, 0.8fr) minmax(260px, 1fr);
+  align-items: end;
+  gap: 16px;
+  padding: 28px 28px 8px;
+}
+
+.npc-art {
+  min-height: 410px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.portrait-placeholder {
+  width: min(310px, 82%);
+  aspect-ratio: 0.72;
+  border: 2px dashed rgba(38, 29, 22, 0.28);
+  border-radius: 8px 8px 34px 34px;
+  background:
+    linear-gradient(145deg, rgba(35, 103, 101, 0.16), rgba(141, 47, 37, 0.08)),
+    #e9dcc0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  color: rgba(38, 29, 22, 0.72);
+}
+
+.portrait-placeholder.configured {
+  object-fit: cover;
+  padding: 0;
+  border-style: solid;
+}
+
+.portrait-placeholder span {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--teal);
+  color: #fff8e8;
+  font-size: 48px;
+  font-weight: 800;
+}
+
+.portrait-placeholder small {
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.npc-shadow {
+  width: 72%;
+  height: 22px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: rgba(38, 29, 22, 0.18);
+  filter: blur(6px);
+}
+
+.npc-info {
+  align-self: center;
+  max-width: 420px;
+  padding: 18px;
+  border: 1px solid rgba(63, 45, 31, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 248, 232, 0.68);
+}
+
+.npc-info p,
+.npc-info h2 {
+  margin: 0;
+}
+
+.npc-info p {
+  color: var(--red);
+  font-size: 14px;
+}
+
+.npc-info h2 {
+  margin-top: 4px;
+  font-size: 42px;
+  line-height: 1.1;
+}
+
+.npc-info span,
+.npc-info b {
+  display: block;
+  margin-top: 8px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.npc-info b {
+  color: #3d3127;
+  font-weight: 700;
+}
+
+.dialogue-box {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  min-height: 228px;
+  padding: 16px;
+  border: 2px solid rgba(63, 45, 31, 0.24);
+  border-radius: 8px;
+  background: rgba(255, 248, 232, 0.96);
+  box-shadow: 0 14px 34px rgba(56, 38, 21, 0.2);
+}
+
+.audio-focus {
+  position: relative;
+  z-index: 2;
+  width: min(820px, calc(100% - 48px));
+  margin: 0 auto 112px;
+  padding: 18px;
+  border: 2px solid rgba(141, 47, 37, 0.28);
+  border-radius: 8px;
+  background: rgba(255, 248, 232, 0.86);
+  box-shadow: 0 18px 48px rgba(56, 38, 21, 0.18);
+  backdrop-filter: blur(2px);
+}
+
+.speaker-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.speaker-line strong {
+  font-size: 20px;
+  color: var(--red);
+}
+
+.speaker-line span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.audio-strip {
+  min-height: 72px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: #2f3e3d;
+  display: grid;
+  grid-template-columns: 1fr 52px;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+}
+
+.waves {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow: hidden;
+}
+
+.waves i {
+  width: 5px;
+  height: var(--wave-height);
+  border-radius: 99px;
+  background: #e8d49c;
+  opacity: 0.72;
+  transform-origin: center;
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.audio-strip.playing .waves i {
+  animation: wave-pulse 0.78s ease-in-out infinite;
+  animation-delay: var(--wave-delay);
+}
+
+.audio-strip.playing .waves i:nth-child(odd) {
+  background: #f7edc9;
+}
+
+.audio-strip.playing .waves i:nth-child(3n) {
+  animation-duration: 0.64s;
+}
+
+.audio-strip.playing .waves i:nth-child(4n) {
+  animation-duration: 0.92s;
+}
+
+@keyframes wave-pulse {
+  0%,
+  100% {
+    transform: scaleY(0.42);
+    opacity: 0.48;
+  }
+
+  45% {
+    transform: scaleY(1.18);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scaleY(0.72);
+    opacity: 0.78;
+  }
+}
+
+.icon-btn {
+  width: 44px;
+  padding: 0;
+  background: #f5e2ba;
+}
+
+.spoken {
+  margin-top: 12px;
+  padding: 14px;
+  min-height: 84px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: rgba(255, 250, 235, 0.72);
+  line-height: 1.75;
+}
+
+.transcript:not(.show) {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.spoken p {
+  margin: 0;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.25fr;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.answer,
+.hint-box {
+  margin: 12px 0 0;
+  border-radius: 8px;
+  line-height: 1.6;
+}
+
+.answer {
+  padding: 10px 12px;
+  background: rgba(35, 103, 101, 0.12);
+  border: 1px solid rgba(35, 103, 101, 0.24);
+}
+
+.hint-box {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 11px 12px;
+  background: rgba(141, 47, 37, 0.1);
+  border: 1px solid rgba(141, 47, 37, 0.22);
+  color: #5a251f;
+}
+
+.letter-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.letter-drawer {
+  min-width: 0;
+  transform: translateX(18px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.22s ease,
+    opacity 0.22s ease;
+}
+
+.letter-drawer.visible {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.locked-paper {
+  flex: 1;
+  min-height: 460px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 28px;
+  text-align: center;
+  color: var(--muted);
+  border: 1px dashed rgba(112, 80, 45, 0.32);
+  border-radius: 8px;
+  background: rgba(255, 248, 232, 0.52);
+}
+
+.locked-paper strong {
+  color: var(--ink);
+  font-size: 22px;
+}
+
+.locked-paper p {
+  margin: 0;
+  line-height: 1.7;
+}
+
+textarea {
+  resize: none;
+  flex: 1;
+  width: 100%;
+  min-height: 460px;
+  padding: 24px 28px;
+  border: 1px solid rgba(112, 80, 45, 0.32);
+  border-radius: 8px;
+  outline: none;
+  color: #2d2118;
+  font-size: 20px;
+  line-height: 2;
+  background:
+    repeating-linear-gradient(to bottom, transparent, transparent 39px, rgba(100, 72, 39, 0.18) 40px),
+    var(--paper-strong);
+}
+
+textarea:focus {
+  border-color: rgba(141, 47, 37, 0.55);
+  box-shadow: 0 0 0 3px rgba(141, 47, 37, 0.12);
+}
+
+.letter-footer {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 12px;
+  color: var(--muted);
+}
+
+.primary {
+  background: var(--red);
+  color: #fff8e8;
+  border-color: rgba(62, 19, 14, 0.32);
+}
+
+.primary:hover {
+  background: #a23a2f;
+}
+
+.wide {
+  width: 100%;
+}
+
+.toast {
+  position: fixed;
+  left: 18px;
+  bottom: 18px;
+  width: min(420px, calc(100vw - 36px));
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 248, 232, 0.96);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.toast div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.toast span {
+  color: var(--muted);
+}
+
+.toast strong {
+  font-size: 24px;
+  color: var(--red);
+}
+
+.toast p {
+  margin: 8px 0 0;
+  line-height: 1.5;
+}
+
+.bad-text {
+  color: var(--red);
+}
+
+.asset-tool {
+  position: fixed;
+  top: 112px;
+  right: 18px;
+  z-index: 20;
+  width: min(520px, calc(100vw - 36px));
+  max-height: calc(100vh - 136px);
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 248, 232, 0.98);
+  box-shadow: var(--shadow);
+}
+
+.asset-tool-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.asset-tool-head span,
+.asset-help,
+.asset-person span,
+.asset-fields label span {
+  color: var(--muted);
+}
+
+.asset-tool-head strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.asset-tool-head button {
+  width: 38px;
+  min-height: 38px;
+  padding: 0;
+  font-size: 24px;
+}
+
+.asset-help {
+  margin: 10px 0 14px;
+  line-height: 1.6;
+}
+
+.asset-list {
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.asset-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid rgba(63, 45, 31, 0.16);
+  border-radius: 8px;
+  background: rgba(255, 250, 235, 0.78);
+}
+
+.asset-row + .asset-row {
+  margin-top: 10px;
+}
+
+.asset-person strong {
+  display: block;
+  font-size: 18px;
+}
+
+.asset-person span {
+  display: block;
+  margin-top: 4px;
+  line-height: 1.4;
+  font-size: 13px;
+}
+
+.asset-fields {
+  display: grid;
+  gap: 8px;
+}
+
+.asset-fields label {
+  display: grid;
+  gap: 5px;
+}
+
+.asset-fields label span {
+  font-size: 13px;
+}
+
+.asset-path {
+  width: 100%;
+  min-height: 38px;
+  padding: 0 10px;
+  border: 1px solid rgba(112, 80, 45, 0.28);
+  border-radius: 6px;
+  background: #fffaf0;
+  color: var(--ink);
+}
+
+.asset-buttons {
+  display: grid;
+  grid-template-columns: 1fr 72px;
+  gap: 8px;
+}
+
+.asset-file {
+  min-width: 0;
+  padding: 8px;
+  border: 1px dashed rgba(112, 80, 45, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 248, 232, 0.72);
+}
+
+.asset-clear {
+  min-height: 38px;
+}
+
+.summary-screen {
+  display: grid;
+  place-items: center;
+}
+
+.summary-panel {
+  width: min(980px, 100%);
+  padding: 28px;
+}
+
+.summary-panel h1 {
+  margin: 0;
+  font-size: 38px;
+}
+
+.summary-copy {
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 760px;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 22px 0;
+}
+
+.result-card {
+  min-height: 128px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 250, 235, 0.68);
+}
+
+.result-card span {
+  color: var(--muted);
+}
+
+.result-card strong {
+  float: right;
+  font-size: 28px;
+  color: var(--red);
+}
+
+.result-card p,
+.departed {
+  line-height: 1.6;
+}
+
+.departed {
+  color: var(--red);
+}
+
+@media (max-width: 1080px) {
+  .topbar {
+    height: auto;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .metrics {
+    justify-content: flex-start;
+  }
+
+  .dialogue-layout,
+  .dialogue-layout.paper-open {
+    grid-template-columns: 1fr;
+  }
+
+  .queue-rail {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .queue-rail .panel-title {
+    grid-column: 1 / -1;
+  }
+
+  .queue-card {
+    margin: 0;
+  }
+
+  .dialogue-stage {
+    min-height: 760px;
+  }
+
+  .letter-drawer {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .app {
+    padding: 10px;
+  }
+
+  .metrics > div {
+    min-width: calc(50% - 5px);
+  }
+
+  .tool-toggle {
+    min-width: calc(50% - 5px);
+  }
+
+  .queue-rail {
+    grid-template-columns: 1fr;
+  }
+
+  .dialogue-stage {
+    min-height: 820px;
+  }
+
+  .npc-scene {
+    inset: 0 0 390px;
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding: 18px;
+  }
+
+  .npc-art {
+    min-height: 260px;
+  }
+
+  .portrait-placeholder {
+    width: min(230px, 76%);
+  }
+
+  .npc-info {
+    max-width: none;
+    width: 100%;
+  }
+
+  .npc-info h2 {
+    font-size: 30px;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .letter-footer,
+  .actions {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .letter-footer .primary {
+    width: 100%;
+  }
+
+  .asset-tool {
+    top: 10px;
+    right: 10px;
+    width: calc(100vw - 20px);
+    max-height: calc(100vh - 20px);
+  }
+
+  .asset-row {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+  </head>
+  <body>
+    <div id="root">
+      <main style="padding:24px;font-family:serif;color:#261d16;background:#f5ecd9;min-height:100vh;">
+        银信局正在开柜，如长时间停在这里，请确认浏览器允许加载本地脚本。
+      </main>
+    </div>
+    <script>
+      window.addEventListener("error", function (event) {
+        var root = document.getElementById("root");
+        if (!root) return;
+        root.innerHTML = '<main style="padding:24px;font-family:serif;color:#261d16;background:#f5ecd9;min-height:100vh;line-height:1.8;"><h1>页面脚本出错了</h1><p>请把下面这行错误发给我，我可以继续修：</p><pre style="white-space:pre-wrap;background:#fff8e8;border:1px solid #d6c2a0;padding:12px;">' + String(event.message || event.error || "未知错误") + '</pre></main>';
+      });
+    </script>
+    <script>const customers = [
+  {
+    id: "rubber-mother",
+    name: "林阿顺",
+    role: "胶园割胶工",
+    origin: "新加坡外埠胶园",
+    destination: "福建泉州安溪县湖头乡",
+    payment: 7,
+    urgency: 62,
+    patience: 88,
+    complexity: 2,
+    letterType: "家书兼汇款",
+    audioText:
+      "先生，替我写给安溪湖头的老母亲。讲我在新加坡胶园还平安，番批里夹十六元家用银，叫她收了先买米。工钱虽被账房扣了些，这句勿写，免得老人家忧心。再讲船期是五月二十八，若迟到也莫惊。",
+    promptHint: "他要寄家用银，也想隐瞒工钱被扣。",
+    askAnswer: "他补充：收信人写林陈氏，托堂兄林耀宗代收。",
+    required: [
+      rule("收信人林陈氏", ["林陈氏", "母亲", "老母"], 16, "写明了老母亲或林陈氏。"),
+      rule("安溪湖头", ["安溪", "湖头"], 12, "籍贯村名无误。"),
+      rule("十六元家用银", ["十六", "16", "家用", "买米"], 18, "家用银数目和用途清楚。"),
+      rule("平安近况", ["平安", "安好", "无恙"], 12, "报平安的意思到位。"),
+      rule("五月二十八船期", ["五月二十八", "5月28", "船期"], 10, "船期交代清楚。"),
+    ],
+    forbidden: [
+      rule("工钱被扣", ["工钱被扣", "扣工钱", "账房扣"], 14, "不该把工钱被扣写给母亲。"),
+      rule("境况凄惨", ["苦死", "活不下去", "病重"], 10, "语气太沉，会让家中担心。"),
+    ],
+    toneTerms: ["母亲大人", "勿念", "安心", "保重", "儿不孝"],
+    formatTerms: ["敬禀", "叩禀", "儿", "谨启", "家书"],
+    successEvent: "老母收到番批后托人回信，说米已买下，只盼儿子保重。",
+    failureEvent: "信里露出工钱被扣，家中急得四处借船费，想派人来南洋寻他。",
+  },
+  {
+    id: "tin-field",
+    name: "郑添水",
+    role: "锡矿工人",
+    origin: "霹雳近打锡矿",
+    destination: "广东梅县松口镇",
+    payment: 8,
+    urgency: 70,
+    patience: 82,
+    complexity: 3,
+    letterType: "托付信",
+    audioText:
+      "我在近打矿场三年未归，替我写给二弟添福。田千万不要卖，父亲坟前清明要有人看。矿上辛苦这话少写，免得他讲我在外头怨天怨地。另寄二十四元，先还去年买种子的债。",
+    promptHint: "他要保住家中田地，并托二弟照顾祖坟。",
+    askAnswer: "他补充：二弟全名郑添福，二十四元交给族叔郑树仁作见证。",
+    required: [
+      rule("二弟郑添福", ["郑添福", "二弟", "添福"], 14, "收信对象写对。"),
+      rule("不要卖田", ["不要卖田", "勿卖田", "田不可卖", "保住田"], 18, "保住田地的托付明确。"),
+      rule("清明祭扫", ["清明", "父亲坟", "祭扫", "坟前"], 12, "照看祖坟的托付写入信中。"),
+      rule("二十四元还债", ["二十四", "24", "买种子", "还债"], 18, "还债金额和用途准确。"),
+    ],
+    forbidden: [rule("怨气太重", ["怨", "恨", "不认", "断绝"], 12, "语气过冲，像是在责怪家人。")],
+    toneTerms: ["商量", "切记", "望弟", "家业", "体谅"],
+    formatTerms: ["弟", "兄", "谨启", "托付"],
+    successEvent: "郑添福托人回话，田暂不卖，债也先压下了。",
+    failureEvent: "二弟误以为兄长责怪全家，回信语气冷硬，家里卖田的事又被提起。",
+  },
+  {
+    id: "redeem-daughter",
+    name: "黄水伯",
+    role: "汇款赎女的父亲",
+    origin: "吧生码头苦力栈",
+    destination: "广东潮州澄海莲下乡",
+    payment: 10,
+    urgency: 94,
+    patience: 72,
+    complexity: 5,
+    letterType: "急信兼汇款",
+    audioText:
+      "求你写快些。寄四十八元回澄海莲下，给我妻阿玉，叫她同族叔黄培坤去把小女阿桃赎回来。前年欠债，孩子被押去张家做童养媳，期限到六月初三。话要重，但不可骂族里，不然他们更不肯放人。写清楚，莫再拖。",
+    promptHint: "他要汇款赎回女儿，期限很紧，语气要急但不能失礼。",
+    askAnswer: "他补充：女儿名黄阿桃，钱交妻子阿玉，族叔黄培坤陪同去张家。",
+    required: [
+      rule("赎回黄阿桃", ["黄阿桃", "阿桃", "小女", "赎回"], 20, "赎回对象写清楚。"),
+      rule("四十八元", ["四十八", "48"], 18, "赎女银数目准确。"),
+      rule("交给妻阿玉", ["阿玉", "妻", "内人"], 14, "收款人没有写错。"),
+      rule("族叔黄培坤", ["黄培坤", "族叔"], 14, "陪同交涉的人写明了。"),
+      rule("六月初三期限", ["六月初三", "6月初3", "期限"], 14, "期限交代清楚。"),
+    ],
+    forbidden: [
+      rule("辱骂宗族", ["骂", "无耻", "断亲", "报官"], 14, "措辞太冲，可能激怒族亲或债主。"),
+      rule("语气太软", ["慢慢", "不急", "有空"], 10, "这封信不能写得像可拖延的小事。"),
+    ],
+    toneTerms: ["务必", "恳请", "切勿拖延", "有礼", "周全", "莫伤和气"],
+    formatTerms: ["急信", "汇款", "妻", "族叔", "谨启"],
+    successEvent: "阿玉带着族叔赶在六月初三前赎回阿桃，回批里只有一句：孩子已回家。",
+    failureEvent: "金额或期限含糊，张家借故拖延，赎回事宜未成。",
+  },
+  {
+    id: "mother-medicine",
+    name: "陈其亮",
+    role: "寄医药费的儿子",
+    origin: "泗水米行后巷",
+    destination: "福建漳州龙溪县石码",
+    payment: 9,
+    urgency: 88,
+    patience: 80,
+    complexity: 4,
+    letterType: "家书兼医药费",
+    audioText:
+      "写给大嫂陈许氏，银三十二元，先请石码林郎中给我娘看病，余下买参片和米。叫大嫂多看顾，账记清。不要写我在米行睡货仓，也不要讲我咳了半月，我娘听了会更病。话要孝顺些，我多年未归，心里亏。",
+    promptHint: "他寄医药费给母亲，但不想让家里知道自己也病着。",
+    askAnswer: "他补充：母亲叫陈林氏，大嫂陈许氏管家，郎中姓林。",
+    required: [
+      rule("三十二元医药费", ["三十二", "32", "医药", "药费"], 18, "医药费金额和用途写明。"),
+      rule("陈许氏收款", ["陈许氏", "大嫂"], 14, "收款照料人写对。"),
+      rule("请林郎中", ["林郎中", "郎中", "看病"], 14, "请郎中看病的安排明确。"),
+      rule("买参片和米", ["参片", "买米", "米"], 12, "余款用途交代清楚。"),
+      rule("照看母亲", ["照看", "看顾", "母亲", "陈林氏"], 14, "托人照料母亲的意思完整。"),
+    ],
+    forbidden: [
+      rule("自己咳病", ["咳", "病了", "货仓", "睡货仓"], 14, "不该透露他自己的困窘病况。"),
+      rule("过度悲伤", ["恐怕见不到", "命苦", "哭", "绝望"], 10, "语气太悲，可能加重家中忧虑。"),
+    ],
+    toneTerms: ["母亲", "大嫂费心", "不孝", "保重", "安心", "调养"],
+    formatTerms: ["家书", "大嫂", "儿", "谨启"],
+    successEvent: "大嫂回信说已请郎中，母亲病势稍缓。",
+    failureEvent: "信中漏了照料安排，银钱被拿去先还杂账，母亲迟了几日才请医。",
+  },
+  {
+    id: "shop-clerk",
+    name: "谢文昌",
+    role: "小商号伙计",
+    origin: "槟城杂货商号",
+    destination: "广东台山端芬乡",
+    payment: 8,
+    urgency: 58,
+    patience: 90,
+    complexity: 3,
+    letterType: "商信兼家书",
+    audioText:
+      "给我妻秀娘写。商号今年账慢，但不是亏空，叫她莫听乡里闲话。我寄二十元，十五元作家用，五元还给三叔。另说端午前若有船，我再寄布匹回去。语气要体面些，别像我在外头失了脸。",
+    promptHint: "他需要体面地说明生意不顺，同时安排家用和还款。",
+    askAnswer: "他补充：妻子名谢林秀娘，三叔叫谢广源。",
+    required: [
+      rule("妻子秀娘", ["秀娘", "妻", "谢林秀娘"], 14, "收信对象写对。"),
+      rule("二十元分配", ["二十", "20", "十五", "五元"], 18, "银钱分配清楚。"),
+      rule("家用与还三叔", ["家用", "三叔", "谢广源", "还"], 16, "家用和还款都写到了。"),
+      rule("端午船期布匹", ["端午", "船", "布匹"], 12, "后续寄布匹的安排明确。"),
+    ],
+    forbidden: [rule("承认亏空", ["亏空", "破产", "败了"], 12, "不该把账慢写成亏空。")],
+    toneTerms: ["勿听闲话", "尚可周转", "体面", "放心", "料理家中"],
+    formatTerms: ["妻", "家用", "商号", "谨启"],
+    successEvent: "秀娘把银钱分清，乡里闲话也暂时压下。",
+    failureEvent: "信写得像商号亏败，家中开始变卖嫁妆防荒。",
+  },
+  {
+    id: "new-coolie",
+    name: "罗阿根",
+    role: "新到南洋的年轻苦力",
+    origin: "新加坡牛车水",
+    destination: "福建永春五里街",
+    payment: 5,
+    urgency: 52,
+    patience: 95,
+    complexity: 2,
+    letterType: "初到家书",
+    audioText:
+      "我第一次写番批，给阿爹阿娘。讲我已经到新加坡牛车水，跟同乡住，活计还在找。不要写我头两夜睡骑楼，也不要写我想哭。就说这里热闹，等领工钱就寄回家。叫妹妹阿兰读书莫停。",
+    promptHint: "他第一次寄信，想报平安，也想鼓励妹妹继续读书。",
+    askAnswer: "他补充：妹妹叫罗阿兰，家里在永春五里街溪边厝。",
+    required: [
+      rule("到达新加坡牛车水", ["新加坡", "牛车水", "到了"], 14, "到达地点写清楚。"),
+      rule("跟同乡住", ["同乡", "住"], 10, "近况交代了。"),
+      rule("等工钱寄回", ["工钱", "寄回", "家用"], 12, "后续寄钱承诺明确。"),
+      rule("阿兰读书", ["阿兰", "读书", "莫停", "不要停"], 14, "妹妹读书的托付写到了。"),
+    ],
+    forbidden: [rule("露宿想哭", ["骑楼", "想哭", "露宿"], 12, "写出狼狈处会吓到家人。")],
+    toneTerms: ["平安", "勿念", "热闹", "放心", "努力"],
+    formatTerms: ["阿爹", "阿娘", "儿", "家书"],
+    successEvent: "家中回信说阿兰还在学堂，父母只叫他稳住脚跟。",
+    failureEvent: "父母得知他露宿，急着向亲戚借钱要他回乡。",
+  },
+  {
+    id: "proxy-letter",
+    name: "吴妈姐",
+    role: "替同乡寄信的人",
+    origin: "新加坡码头边",
+    destination: "福建晋江安海",
+    payment: 6,
+    urgency: 76,
+    patience: 76,
+    complexity: 4,
+    letterType: "代托信",
+    audioText:
+      "我是替隔壁阿珍来的，她男人在船上未返。她叫我写给晋江安海婆家，说这月寄十二元，先给孩子买药，再还米铺账。哎，孩子名字我一时想不起，像叫水生？你最好问我一句。",
+    promptHint: "她是代别人来寄信，关键信息有缺口。",
+    askAnswer: "她想起来了：孩子叫许水生，婆家收信人是许黄氏。",
+    required: [
+      rule("阿珍托寄", ["阿珍", "代", "托"], 12, "代托关系写清楚。"),
+      rule("许黄氏收信", ["许黄氏", "婆家"], 14, "婆家收信人写对。"),
+      rule("十二元", ["十二", "12"], 14, "汇款数目准确。"),
+      rule("许水生买药", ["许水生", "水生", "买药", "孩子"], 18, "孩子姓名和医药用途写清楚。"),
+      rule("还米铺账", ["米铺", "还账", "米账"], 10, "米铺账也交代了。"),
+    ],
+    forbidden: [rule("写成自己寄信", ["我吴妈姐", "吴妈姐寄"], 10, "不能把代托信写成她自己的家书。")],
+    toneTerms: ["代禀", "托付", "照看", "孩子", "周全"],
+    formatTerms: ["代", "婆家", "谨启", "托"],
+    successEvent: "阿珍知道孩子姓名没写错，隔日送来一包茶叶答谢。",
+    failureEvent: "孩子姓名含糊，婆家误把药钱先拿去还账。",
+  },
+  {
+    id: "guild-donation",
+    name: "许敬堂",
+    role: "会馆商会中人",
+    origin: "槟城福建会馆",
+    destination: "福建南安诗山",
+    payment: 12,
+    urgency: 60,
+    patience: 86,
+    complexity: 4,
+    letterType: "会馆公信",
+    audioText:
+      "写给南安诗山族长。槟城福建会馆募得一百二十元，助修义学，不是修祠堂。请族长会同乡绅立账，秋后把收支明细回批。称谓要庄重，莫写成寻常家书。",
+    promptHint: "这是一封正式公信，关系到义学捐资。",
+    askAnswer: "他补充：族长名许瑞章，回批寄槟城福建会馆账房。",
+    required: [
+      rule("族长许瑞章", ["许瑞章", "族长"], 14, "正式收信人写对。"),
+      rule("一百二十元", ["一百二十", "120"], 18, "捐资金额准确。"),
+      rule("助修义学", ["义学", "学堂"], 18, "用途写成义学。"),
+      rule("立账回批", ["立账", "收支", "回批", "明细"], 14, "账目与回批要求明确。"),
+    ],
+    forbidden: [
+      rule("写成修祠", ["修祠", "祠堂"], 16, "用途不能写成修祠堂。"),
+      rule("家书口吻", ["阿爹", "阿娘", "儿"], 8, "公信不能用家书口吻。"),
+    ],
+    toneTerms: ["敬启", "会同", "乡绅", "谨具", "公议", "查照"],
+    formatTerms: ["公信", "会馆", "族长", "敬启", "账房"],
+    successEvent: "诗山来批称义学账目已立，银信局声誉上升。",
+    failureEvent: "用途写错，族中争执捐银该修祠还是办学。",
+  },
+  {
+    id: "secret-debt",
+    name: "梁七",
+    role: "秘密高风险来客",
+    origin: "吧生河边栈房",
+    destination: "广东顺德龙江",
+    payment: 14,
+    urgency: 82,
+    patience: 68,
+    complexity: 5,
+    letterType: "隐晦急信",
+    audioText:
+      "这信写给我大哥梁德成。不要明写我逃了工棚，也不要写帮会两个字。只说我换了东家，旧账三十元请他先同陈掌柜周旋，莫让家里签卖地契。若有人问，就说我是寄平安信。",
+    promptHint: "内容涉及逃工和债务，需要隐晦表达。",
+    askAnswer: "他补充：陈掌柜在龙江东市口，旧账三十元先求缓一个月。",
+    required: [
+      rule("大哥梁德成", ["梁德成", "大哥"], 14, "收信对象写对。"),
+      rule("换了东家", ["换了东家", "另谋活计", "改投别处"], 14, "用隐晦方式交代处境。"),
+      rule("旧账三十元", ["三十", "30", "旧账"], 16, "旧账金额准确。"),
+      rule("陈掌柜周旋", ["陈掌柜", "周旋", "缓一个月"], 16, "周旋对象和要求明确。"),
+      rule("不要卖地契", ["地契", "卖地", "莫卖"], 14, "保住地契的请求写清。"),
+    ],
+    forbidden: [
+      rule("逃工直写", ["逃工", "逃了", "工棚"], 16, "直写逃工会惹来追查。"),
+      rule("帮会直写", ["帮会", "私会", "黑账"], 14, "敏感词太直白，风险很高。"),
+    ],
+    toneTerms: ["平安", "周旋", "缓", "勿惊", "暂且"],
+    formatTerms: ["大哥", "谨启", "平安信"],
+    successEvent: "梁德成回批说旧账暂缓，家中地契保住了。",
+    failureEvent: "信里露出逃工字眼，陈掌柜的人先一步找到了梁家。",
+  },
+];
+
+function rule(label, terms, weight, feedback) {
+  return { label, terms, weight, feedback };
+}
+
+const daySeconds = 9 * 60;
+const assetStorageKey = "yin-xin-placeholder-assets";
+let state = createInitialState();
+let timer = null;
+
+function loadAssetConfig() {
+  try {
+    return JSON.parse(localStorage.getItem(assetStorageKey) || "{}");
+  } catch (error) {
+    return {};
+  }
+}
+
+function saveAssetConfig(config) {
+  localStorage.setItem(assetStorageKey, JSON.stringify(config));
+}
+
+function createInitialState() {
+  return {
+    queue: customers.map((customer) => ({ ...customer })),
+    currentIndex: 0,
+    dayTime: daySeconds,
+    customerTime: 0,
+    letter: "",
+    money: 0,
+    reputation: 52,
+    isPlaying: false,
+    hasListened: false,
+    isPaperOpen: false,
+    hasAsked: false,
+    lastResult: null,
+    completed: [],
+    departed: [],
+    isDayEnded: false,
+    isAssetToolOpen: false,
+    assetConfig: loadAssetConfig(),
+  };
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function normalize(text) {
+  return text.toLowerCase().replace(/\s/g, "");
+}
+
+function hasAny(text, terms) {
+  return terms.some((term) => text.includes(term.toLowerCase()));
+}
+
+function evaluateLetter(customer, letter, secondsUsed) {
+  const text = normalize(letter);
+  const maxFact = customer.required.reduce((sum, item) => sum + item.weight, 0);
+  let factPoints = 0;
+  let forbiddenPenalty = 0;
+  const positive = [];
+  const negative = [];
+
+  customer.required.forEach((item) => {
+    if (hasAny(text, item.terms)) {
+      factPoints += item.weight;
+      positive.push(item.feedback);
+    } else {
+      negative.push(`漏写：${item.label}`);
+    }
+  });
+
+  customer.forbidden.forEach((item) => {
+    if (hasAny(text, item.terms)) {
+      forbiddenPenalty += item.weight;
+      negative.push(item.feedback);
+    }
+  });
+
+  const factScore = clamp(Math.round((factPoints / maxFact) * 100 - forbiddenPenalty), 0, 100);
+  const intentScore = clamp(Math.round((factPoints / maxFact) * 88 + (negative.length === 0 ? 12 : 0)), 0, 100);
+  const toneHits = customer.toneTerms.filter((term) => text.includes(term.toLowerCase())).length;
+  const toneScore = clamp(46 + toneHits * 14 - forbiddenPenalty, 0, 100);
+  const formatHits = customer.formatTerms.filter((term) => text.includes(term.toLowerCase())).length;
+  const formatScore = clamp(42 + formatHits * 14, 0, 100);
+  const idealSeconds = 68 + customer.complexity * 18;
+  const timePenalty = clamp(Math.round(Math.max(0, secondsUsed - idealSeconds) / 8), 0, 16);
+  const finalScore = clamp(
+    Math.round(factScore * 0.42 + intentScore * 0.24 + toneScore * 0.18 + formatScore * 0.16 - timePenalty),
+    0,
+    100,
+  );
+  const feedback = [`事实准确度 ${factScore}`, `意图符合度 ${intentScore}`, `语气匹配度 ${toneScore}`, `文体适配度 ${formatScore}`];
+
+  if (timePenalty > 0) feedback.push(`用时偏久，扣 ${timePenalty} 分`);
+  if (letter.trim().length < 48) feedback.push("信件太短，像柜台便条，不像能寄回乡里的番批。");
+
+  return { factScore, intentScore, toneScore, formatScore, timePenalty, finalScore, feedback, positive, negative };
+}
+
+function currentCustomer() {
+  return state.queue[state.currentIndex];
+}
+
+function formatClock(seconds) {
+  const startHour = 8;
+  const elapsedMinutes = Math.floor((daySeconds - seconds) / 6);
+  const hour = startHour + Math.floor(elapsedMinutes / 60);
+  const minute = elapsedMinutes % 60;
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+}
+
+function patienceColor(value) {
+  if (value > 62) return "good";
+  if (value > 32) return "warn";
+  return "bad";
+}
+
+function spendTime(seconds) {
+  state.dayTime = Math.max(0, state.dayTime - seconds);
+  state.customerTime += seconds;
+  if (state.dayTime <= 0) state.isDayEnded = true;
+}
+
+function tick() {
+  if (state.isDayEnded || !currentCustomer()) return;
+  state.dayTime = Math.max(0, state.dayTime - 1);
+  state.customerTime += 1;
+
+  state.queue = state.queue.filter((customer, index) => {
+    if (index <= state.currentIndex) return true;
+    const drain = 0.015 + customer.urgency / 9000 + customer.complexity / 260;
+    customer.patience = Math.max(0, customer.patience - drain);
+    if (customer.patience > 0) return true;
+    state.departed.push(customer);
+    state.reputation = Math.max(0, state.reputation - 3);
+    return false;
+  });
+
+  if (state.dayTime <= 0) state.isDayEnded = true;
+  render();
+}
+
+function playAudio() {
+  if (!currentCustomer() || state.isPlaying) return;
+  state.isPlaying = true;
+  state.hasListened = true;
+  spendTime(12);
+  render();
+  window.setTimeout(() => {
+    state.isPlaying = false;
+    render();
+  }, 900);
+}
+
+function askQuestion() {
+  if (!currentCustomer() || state.hasAsked) return;
+  state.hasAsked = true;
+  spendTime(18);
+  render();
+}
+
+function submitLetter() {
+  const customer = currentCustomer();
+  if (!customer || state.isDayEnded) return;
+  const letterBox = document.querySelector("#letterBox");
+  state.letter = letterBox ? letterBox.value : state.letter;
+  const evaluation = evaluateLetter(customer, state.letter, state.customerTime);
+  const earned = evaluation.finalScore >= 72 ? customer.payment : Math.max(1, Math.round(customer.payment * 0.45));
+  const reputationShift = evaluation.finalScore >= 82 ? 4 : evaluation.finalScore >= 62 ? 1 : -4;
+  const result = { customer, letter: state.letter, evaluation, secondsUsed: state.customerTime };
+
+  state.money += earned;
+  state.reputation = clamp(state.reputation + reputationShift, 0, 100);
+  state.completed.push(result);
+  state.lastResult = result;
+  state.letter = "";
+  state.hasAsked = false;
+  state.hasListened = false;
+  state.isPaperOpen = false;
+  state.customerTime = 0;
+  state.currentIndex += 1;
+  if (state.currentIndex >= state.queue.length) state.isDayEnded = true;
+  render();
+}
+
+function resetDay() {
+  state = createInitialState();
+  startTimer();
+  render();
+}
+
+function startTimer() {
+  if (timer) window.clearInterval(timer);
+  timer = window.setInterval(tick, 1000);
+}
+
+function icon(label) {
+  return `<span class="icon">${label}</span>`;
+}
+
+function escapeAttr(value) {
+  return String(value || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+}
+
+function getAsset(customerId, kind) {
+  return state.assetConfig[customerId]?.[kind] || "";
+}
+
+function setAsset(customerId, kind, value) {
+  state.assetConfig = {
+    ...state.assetConfig,
+    [customerId]: {
+      ...(state.assetConfig[customerId] || {}),
+      [kind]: value,
+    },
+  };
+  saveAssetConfig(state.assetConfig);
+  render();
+}
+
+function clearAsset(customerId, kind) {
+  setAsset(customerId, kind, "");
+}
+
+function readAssetFile(customerId, kind, file) {
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => setAsset(customerId, kind, String(reader.result || ""));
+  reader.readAsDataURL(file);
+}
+
+function assetImageOrPlaceholder(customer, kind, className, label) {
+  const src = getAsset(customer.id, kind);
+  if (src) {
+    return `<img class="${className} configured" src="${escapeAttr(src)}" alt="${escapeAttr(customer.name)} ${label}" />`;
+  }
+  if (kind === "npc") {
+    return `
+      <div class="${className}">
+        <span>${customer.name.slice(0, 1)}</span>
+        <small>NPC IMAGE</small>
+      </div>
+    `;
+  }
+  return `
+    <div class="${className}">
+      <span>${customer.name.slice(0, 1)}</span>
+      <small>TOP</small>
+    </div>
+  `;
+}
+
+function queuePerson(customer, index, isActive) {
+  const patience = Math.round(customer.patience);
+  return `
+    <article class="queue-person ${isActive ? "at-counter" : ""}" style="--step:${index}; --patience:${patience}%">
+      <div class="queue-character">
+        ${assetImageOrPlaceholder(customer, "queue", "queue-image-placeholder", "队列图")}
+        <div class="queue-floor-shadow"></div>
+      </div>
+      <div class="queue-nameplate">
+        <strong>${customer.name}</strong>
+        <span>${customer.role}</span>
+        ${isActive ? "<b>柜台</b>" : `<i><em></em></i>`}
+      </div>
+    </article>
+  `;
+}
+
+function openPaper() {
+  if (!currentCustomer() || !state.hasListened) return;
+  state.isPaperOpen = true;
+  render();
+}
+
+function toggleAssetTool() {
+  state.isAssetToolOpen = !state.isAssetToolOpen;
+  render();
+}
+
+function renderAssetTool() {
+  if (!state.isAssetToolOpen) return "";
+  return `
+    <aside class="asset-tool">
+      <div class="asset-tool-head">
+        <div>
+          <span>Placeholder 工具</span>
+          <strong>图片配置</strong>
+        </div>
+        <button id="closeAssetTool" title="关闭">×</button>
+      </div>
+      <p class="asset-help">为每位客人分别配置 NPC 立绘和队列俯视图。可粘贴相对路径、绝对路径、URL，或选择本地图片存入浏览器缓存。</p>
+      <div class="asset-list">
+        ${customers
+          .map((customer) => {
+            const npcValue = getAsset(customer.id, "npc");
+            const queueValue = getAsset(customer.id, "queue");
+            return `
+              <section class="asset-row" data-customer="${customer.id}">
+                <div class="asset-person">
+                  <strong>${customer.name}</strong>
+                  <span>${customer.role}</span>
+                </div>
+                <div class="asset-fields">
+                  <label>
+                    <span>NPC 立绘</span>
+                    <input class="asset-path" data-id="${customer.id}" data-kind="npc" value="${escapeAttr(npcValue)}" placeholder="./images/${customer.id}-npc.png" />
+                  </label>
+                  <div class="asset-buttons">
+                    <input class="asset-file" data-id="${customer.id}" data-kind="npc" type="file" accept="image/*" />
+                    <button class="asset-clear" data-id="${customer.id}" data-kind="npc">清空</button>
+                  </div>
+                  <label>
+                    <span>队列俯视图</span>
+                    <input class="asset-path" data-id="${customer.id}" data-kind="queue" value="${escapeAttr(queueValue)}" placeholder="./images/${customer.id}-top.png" />
+                  </label>
+                  <div class="asset-buttons">
+                    <input class="asset-file" data-id="${customer.id}" data-kind="queue" type="file" accept="image/*" />
+                    <button class="asset-clear" data-id="${customer.id}" data-kind="queue">清空</button>
+                  </div>
+                </div>
+              </section>
+            `;
+          })
+          .join("")}
+      </div>
+    </aside>
+  `;
+}
+
+function bindAssetTool() {
+  const openButton = document.querySelector("#assetToolBtn");
+  if (openButton) openButton.addEventListener("click", toggleAssetTool);
+
+  const closeButton = document.querySelector("#closeAssetTool");
+  if (closeButton) closeButton.addEventListener("click", toggleAssetTool);
+
+  document.querySelectorAll(".asset-path").forEach((input) => {
+    input.addEventListener("change", (event) => {
+      const target = event.target;
+      setAsset(target.dataset.id, target.dataset.kind, target.value.trim());
+    });
+  });
+
+  document.querySelectorAll(".asset-file").forEach((input) => {
+    input.addEventListener("change", (event) => {
+      const target = event.target;
+      readAssetFile(target.dataset.id, target.dataset.kind, target.files?.[0]);
+    });
+  });
+
+  document.querySelectorAll(".asset-clear").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const target = event.currentTarget;
+      clearAsset(target.dataset.id, target.dataset.kind);
+    });
+  });
+}
+
+function renderSummary(root) {
+  const avgScore = state.completed.length
+    ? Math.round(state.completed.reduce((sum, item) => sum + item.evaluation.finalScore, 0) / state.completed.length)
+    : 0;
+  root.innerHTML = `
+    <main class="app summary-screen">
+      <section class="summary-panel">
+        <div>
+          <p class="eyebrow">今日收柜</p>
+          <h1>南洋埠头的船灯暗下来了</h1>
+          <p class="summary-copy">你完成了 ${state.completed.length} 封番批，${state.departed.length} 位客人等不及离开。平均信件评分 ${avgScore}，今日收入 ${state.money} 元，银信局声誉 ${state.reputation}。</p>
+        </div>
+        <div class="summary-grid">
+          ${state.completed
+            .map(
+              (item) => `
+                <article class="result-card">
+                  <span>${item.customer.role}</span>
+                  <strong>${item.evaluation.finalScore}</strong>
+                  <p>${item.evaluation.finalScore >= 68 ? item.customer.successEvent : item.customer.failureEvent}</p>
+                </article>
+              `,
+            )
+            .join("")}
+        </div>
+        ${state.departed.length > 0 ? `<p class="departed">离队：${state.departed.map((item) => item.name).join("、")}</p>` : ""}
+        <button class="primary wide" id="resetBtn">${icon("↻")}重新开柜</button>
+      </section>
+    </main>
+  `;
+  document.querySelector("#resetBtn").addEventListener("click", resetDay);
+}
+
+function renderGame(root) {
+  const current = currentCustomer();
+  const waitingQueue = state.queue.slice(state.currentIndex + 1);
+  const shipDeadline = Math.max(0, state.dayTime - 105);
+
+  root.innerHTML = `
+    <main class="app">
+      <header class="topbar">
+        <div class="brand">
+          <span class="seal">银</span>
+          <div>
+            <p>南洋埠头</p>
+            <h1>银信局写信员</h1>
+          </div>
+        </div>
+        <div class="metrics">
+          <div>${icon("◷")}<span>${formatClock(state.dayTime)}</span></div>
+          <div>${icon("舶")}<span>船期 ${Math.ceil(shipDeadline / 60)} 分</span></div>
+          <div>${icon("钱")}<span>${state.money} 元</span></div>
+          <div>${icon("誉")}<span>声誉 ${state.reputation}</span></div>
+          <button class="tool-toggle" id="assetToolBtn">${icon("图")}图片</button>
+        </div>
+      </header>
+
+      <section class="dialogue-layout ${state.isPaperOpen ? "paper-open" : ""}">
+        <aside class="queue-rail">
+          <div class="panel-title">${icon("队")}<span>柜前队伍</span></div>
+          <div class="queue-scene">
+            <div class="counter-marker">柜台</div>
+            <div class="queue-line"></div>
+            ${[current, ...waitingQueue].map((customer, index) => queuePerson(customer, index, index === 0)).join("")}
+          </div>
+        </aside>
+
+        <section class="dialogue-stage">
+          <div class="npc-scene">
+            <div class="npc-art" aria-label="NPC placeholder">
+              ${assetImageOrPlaceholder(current, "npc", "portrait-placeholder", "立绘")}
+              <div class="npc-shadow"></div>
+            </div>
+            <div class="npc-info">
+              <p>${current.origin}</p>
+              <h2>${current.name}</h2>
+              <span>${current.role} · ${current.letterType}</span>
+              <b>寄往：${current.destination}</b>
+            </div>
+          </div>
+
+          <div class="audio-focus" aria-label="客人口述语音">
+            <div class="speaker-line">
+              <strong>${current.name}</strong>
+              <span>${state.hasListened ? "语音已听取" : "等待听取口述"}</span>
+            </div>
+            <div class="audio-strip ${state.isPlaying ? "playing" : ""}">
+              <div class="waves">
+                ${Array.from(
+                  { length: 56 },
+                  (_, index) =>
+                    `<i style="--wave-height:${18 + ((index * 13) % 38)}px; --wave-delay:${(index % 14) * 0.045}s"></i>`,
+                ).join("")}
+              </div>
+              <button class="icon-btn" id="playBtn" title="播放语音">${icon("听")}</button>
+            </div>
+          </div>
+
+          <div class="dialogue-box">
+            <div class="speaker-line">
+              <strong>${current.name}</strong>
+              <span>${state.hasListened ? "语音已听取" : "等待听取口述"}</span>
+            </div>
+            <div class="spoken transcript ${state.hasListened ? "show" : ""}">
+              <p>${state.hasListened ? current.audioText : "点击语音条听取客人口述。听完后，信纸才会展开。"}</p>
+            </div>
+            <div class="actions">
+              <button id="replayBtn">${icon("↻")}重听耗时</button>
+              <button id="askBtn" ${state.hasAsked ? "disabled" : ""}>${icon("?")}追问</button>
+              <button class="primary" id="openPaperBtn" ${state.hasListened ? "" : "disabled"}>${icon("信")}打开信纸</button>
+            </div>
+            ${state.hasAsked ? `<p class="answer">${current.askAnswer}</p>` : ""}
+            <div class="hint-box">${icon("!")}<span>${current.promptHint}</span></div>
+          </div>
+        </section>
+
+        <section class="letter-panel letter-drawer ${state.isPaperOpen ? "visible" : ""}" aria-hidden="${state.isPaperOpen ? "false" : "true"}">
+          <div class="panel-title">${icon("信")}<span>信纸记录</span></div>
+          ${
+            state.isPaperOpen
+              ? `
+                <textarea id="letterBox" placeholder="在此代客写信。记清银钱、人名、村名和托付，也要顾住语气。">${state.letter}</textarea>
+                <div class="letter-footer">
+                  <span>当前用时 ${state.customerTime} 秒</span>
+                  <button class="primary" id="submitBtn">${icon("封")}封信交付</button>
+                </div>
+              `
+              : `
+                <div class="locked-paper">
+                  <span>${icon("听")}</span>
+                  <strong>先听完客人口述</strong>
+                  <p>语音听取后，信纸会从柜台展开，开始记录与润色。</p>
+                </div>
+              `
+          }
+        </section>
+      </section>
+
+      ${
+        state.lastResult
+          ? `
+            <aside class="toast">
+              <div><span>上一封：${state.lastResult.customer.role}</span><strong>${state.lastResult.evaluation.finalScore} 分</strong></div>
+              <p>${state.lastResult.evaluation.positive.slice(0, 2).join("；") || "内容仍需斟酌。"}</p>
+              ${state.lastResult.evaluation.negative.length > 0 ? `<p class="bad-text">${state.lastResult.evaluation.negative[0]}</p>` : ""}
+            </aside>
+          `
+          : ""
+      }
+      ${renderAssetTool()}
+    </main>
+  `;
+
+  const letterBox = document.querySelector("#letterBox");
+  if (letterBox) {
+    letterBox.addEventListener("input", (event) => {
+      state.letter = event.target.value;
+    });
+  }
+  document.querySelector("#playBtn").addEventListener("click", playAudio);
+  document.querySelector("#replayBtn").addEventListener("click", playAudio);
+  document.querySelector("#askBtn").addEventListener("click", askQuestion);
+  document.querySelector("#openPaperBtn").addEventListener("click", openPaper);
+  const submitBtn = document.querySelector("#submitBtn");
+  if (submitBtn) submitBtn.addEventListener("click", submitLetter);
+  bindAssetTool();
+}
+
+function render() {
+  const root = document.querySelector("#root");
+  if (!root) return;
+  if (state.isDayEnded || !currentCustomer()) {
+    if (timer) window.clearInterval(timer);
+    renderSummary(root);
+    return;
+  }
+  renderGame(root);
+}
+
+startTimer();
+render();
+</script>
+  </body>
+</html>
