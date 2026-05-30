@@ -272,6 +272,8 @@ const daySeconds = 9 * 60;
 const assetStorageKey = "yin-xin-placeholder-assets";
 let state = createInitialState();
 let timer = null;
+let activeAudio = null;
+let playTimer = null;
 
 function loadAssetConfig() {
   try {
@@ -409,14 +411,33 @@ function tick() {
 
 function playAudio() {
   if (!currentCustomer() || state.isPlaying) return;
+  const customer = currentCustomer();
+  const audioSrc = getAsset(customer.id, "audio");
   state.isPlaying = true;
   state.hasListened = true;
   spendTime(12);
   render();
-  window.setTimeout(() => {
+
+  if (playTimer) window.clearTimeout(playTimer);
+  if (activeAudio) {
+    activeAudio.pause();
+    activeAudio = null;
+  }
+
+  const finishPlayback = () => {
     state.isPlaying = false;
     render();
-  }, 900);
+  };
+
+  if (audioSrc) {
+    activeAudio = new Audio(audioSrc);
+    activeAudio.addEventListener("ended", finishPlayback, { once: true });
+    activeAudio.addEventListener("error", finishPlayback, { once: true });
+    activeAudio.play().catch(finishPlayback);
+    return;
+  }
+
+  playTimer = window.setTimeout(finishPlayback, 1800);
 }
 
 function askQuestion() {
@@ -443,6 +464,7 @@ function submitLetter() {
   state.letter = "";
   state.hasAsked = false;
   state.hasListened = false;
+  state.isPlaying = false;
   state.isPaperOpen = false;
   state.customerTime = 0;
   state.currentIndex += 1;
@@ -552,16 +574,17 @@ function renderAssetTool() {
       <div class="asset-tool-head">
         <div>
           <span>Placeholder 工具</span>
-          <strong>图片配置</strong>
+          <strong>素材配置</strong>
         </div>
         <button id="closeAssetTool" title="关闭">×</button>
       </div>
-      <p class="asset-help">为每位客人分别配置 NPC 立绘和队列俯视图。可粘贴相对路径、绝对路径、URL，或选择本地图片存入浏览器缓存。</p>
+      <p class="asset-help">为每位客人配置 NPC 立绘、队列俯视图和口述音频。可粘贴相对路径、绝对路径、URL，或选择本地文件存入浏览器缓存。</p>
       <div class="asset-list">
         ${customers
           .map((customer) => {
             const npcValue = getAsset(customer.id, "npc");
             const queueValue = getAsset(customer.id, "queue");
+            const audioValue = getAsset(customer.id, "audio");
             return `
               <section class="asset-row" data-customer="${customer.id}">
                 <div class="asset-person">
@@ -584,6 +607,14 @@ function renderAssetTool() {
                   <div class="asset-buttons">
                     <input class="asset-file" data-id="${customer.id}" data-kind="queue" type="file" accept="image/*" />
                     <button class="asset-clear" data-id="${customer.id}" data-kind="queue">清空</button>
+                  </div>
+                  <label>
+                    <span>口述音频</span>
+                    <input class="asset-path" data-id="${customer.id}" data-kind="audio" value="${escapeAttr(audioValue)}" placeholder="./audio/${customer.id}.mp3" />
+                  </label>
+                  <div class="asset-buttons">
+                    <input class="asset-file" data-id="${customer.id}" data-kind="audio" type="file" accept="audio/*" />
+                    <button class="asset-clear" data-id="${customer.id}" data-kind="audio">清空</button>
                   </div>
                 </div>
               </section>
@@ -677,7 +708,7 @@ function renderGame(root) {
           <div>${icon("舶")}<span>船期 ${Math.ceil(shipDeadline / 60)} 分</span></div>
           <div>${icon("钱")}<span>${state.money} 元</span></div>
           <div>${icon("誉")}<span>声誉 ${state.reputation}</span></div>
-          <button class="tool-toggle" id="assetToolBtn">${icon("图")}图片</button>
+          <button class="tool-toggle" id="assetToolBtn">${icon("材")}素材</button>
         </div>
       </header>
 
@@ -692,10 +723,27 @@ function renderGame(root) {
         </aside>
 
         <section class="dialogue-stage">
+          <div class="stage-backdrop" aria-hidden="true"></div>
           <div class="npc-scene">
-            <div class="npc-art" aria-label="NPC placeholder">
+            <button class="npc-art ${state.isPlaying ? "listening" : ""}" id="npcPlayTarget" title="点击听取口述" aria-label="播放${escapeAttr(current.name)}的口述">
               ${assetImageOrPlaceholder(current, "npc", "portrait-placeholder", "立绘")}
               <div class="npc-shadow"></div>
+            </button>
+            <div class="audio-visualizer ${state.hasListened ? "visible" : ""}" aria-label="客人口述波形">
+              <div class="speaker-line">
+                <strong>${current.name}</strong>
+                <span>${state.isPlaying ? "正在听取口述" : state.hasListened ? "语音已听取" : "点击立绘听取口述"}</span>
+              </div>
+              <div class="audio-strip ${state.isPlaying ? "playing" : ""}">
+              <div class="waves">
+                ${Array.from(
+                  { length: 56 },
+                  (_, index) =>
+                    `<i style="--wave-height:${18 + ((index * 13) % 38)}px; --wave-delay:${(index % 14) * 0.045}s"></i>`,
+                ).join("")}
+              </div>
+              <button class="icon-btn" id="playBtn" title="重听语音">${icon("听")}</button>
+              </div>
             </div>
             <div class="npc-info">
               <p>${current.origin}</p>
@@ -705,30 +753,10 @@ function renderGame(root) {
             </div>
           </div>
 
-          <div class="audio-focus" aria-label="客人口述语音">
-            <div class="speaker-line">
-              <strong>${current.name}</strong>
-              <span>${state.hasListened ? "语音已听取" : "等待听取口述"}</span>
-            </div>
-            <div class="audio-strip ${state.isPlaying ? "playing" : ""}">
-              <div class="waves">
-                ${Array.from(
-                  { length: 56 },
-                  (_, index) =>
-                    `<i style="--wave-height:${18 + ((index * 13) % 38)}px; --wave-delay:${(index % 14) * 0.045}s"></i>`,
-                ).join("")}
-              </div>
-              <button class="icon-btn" id="playBtn" title="播放语音">${icon("听")}</button>
-            </div>
-          </div>
-
           <div class="dialogue-box">
             <div class="speaker-line">
               <strong>${current.name}</strong>
               <span>${state.hasListened ? "语音已听取" : "等待听取口述"}</span>
-            </div>
-            <div class="spoken transcript ${state.hasListened ? "show" : ""}">
-              <p>${state.hasListened ? current.audioText : "点击语音条听取客人口述。听完后，信纸才会展开。"}</p>
             </div>
             <div class="actions">
               <button id="replayBtn">${icon("↻")}重听耗时</button>
@@ -736,7 +764,6 @@ function renderGame(root) {
               <button class="primary" id="openPaperBtn" ${state.hasListened ? "" : "disabled"}>${icon("信")}打开信纸</button>
             </div>
             ${state.hasAsked ? `<p class="answer">${current.askAnswer}</p>` : ""}
-            <div class="hint-box">${icon("!")}<span>${current.promptHint}</span></div>
           </div>
         </section>
 
@@ -784,6 +811,7 @@ function renderGame(root) {
     });
   }
   document.querySelector("#playBtn").addEventListener("click", playAudio);
+  document.querySelector("#npcPlayTarget").addEventListener("click", playAudio);
   document.querySelector("#replayBtn").addEventListener("click", playAudio);
   document.querySelector("#askBtn").addEventListener("click", askQuestion);
   document.querySelector("#openPaperBtn").addEventListener("click", openPaper);

@@ -181,12 +181,25 @@ input {
   position: relative;
   min-height: 700px;
   overflow: hidden;
-  display: grid;
-  align-items: center;
+  background: #161411;
+}
+
+.stage-backdrop {
+  position: absolute;
+  inset: 0;
   background:
-    linear-gradient(to bottom, rgba(32, 81, 79, 0.1), rgba(74, 49, 30, 0.08)),
-    linear-gradient(to bottom, transparent 0 58%, rgba(64, 43, 25, 0.2) 58% 100%),
-    rgba(252, 244, 224, 0.94);
+    linear-gradient(to bottom, rgba(18, 14, 10, 0.04), rgba(18, 14, 10, 0.18)),
+    url("../images/桌子前移半截.png") center / cover no-repeat;
+  filter: saturate(0.94);
+}
+
+.stage-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 34%, rgba(255, 235, 182, 0.18), transparent 30%),
+    linear-gradient(to bottom, transparent 0 66%, rgba(22, 16, 10, 0.18) 100%);
 }
 
 .panel-title {
@@ -438,24 +451,30 @@ input {
 
 .npc-scene {
   position: absolute;
-  inset: 0 0 236px;
+  inset: 30px 0 122px;
+  z-index: 1;
   display: grid;
-  grid-template-columns: minmax(240px, 0.8fr) minmax(260px, 1fr);
-  align-items: end;
-  gap: 16px;
-  padding: 28px 28px 8px;
+  grid-template-columns: minmax(260px, 520px);
+  place-content: end center;
+  align-items: center;
+  gap: 8px;
+  padding: 0 28px;
 }
 
 .npc-art {
-  min-height: 410px;
+  min-height: 360px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .portrait-placeholder {
-  width: min(310px, 82%);
+  width: min(320px, 78%);
   aspect-ratio: 0.72;
   border: 2px dashed rgba(38, 29, 22, 0.28);
   border-radius: 8px 8px 34px 34px;
@@ -470,9 +489,25 @@ input {
 }
 
 .portrait-placeholder.configured {
-  object-fit: cover;
+  display: block;
+  object-fit: contain;
   padding: 0;
-  border-style: solid;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.npc-art:hover .portrait-placeholder.configured,
+.npc-art:focus-visible .portrait-placeholder.configured {
+  transform: translateY(-4px);
+  filter: drop-shadow(0 22px 24px rgba(13, 9, 5, 0.32));
+}
+
+.npc-art.listening .portrait-placeholder {
+  filter: drop-shadow(0 0 18px rgba(245, 226, 186, 0.3)) drop-shadow(0 24px 28px rgba(13, 9, 5, 0.36));
 }
 
 .portrait-placeholder span {
@@ -494,9 +529,9 @@ input {
 }
 
 .npc-shadow {
-  width: 72%;
-  height: 22px;
-  margin-top: -10px;
+  width: 54%;
+  height: 18px;
+  margin-top: -18px;
   border-radius: 50%;
   background: rgba(38, 29, 22, 0.18);
   filter: blur(6px);
@@ -504,11 +539,13 @@ input {
 
 .npc-info {
   align-self: center;
-  max-width: 420px;
-  padding: 18px;
+  justify-self: center;
+  width: min(420px, 100%);
+  padding: 12px 16px;
   border: 1px solid rgba(63, 45, 31, 0.18);
   border-radius: 8px;
-  background: rgba(255, 248, 232, 0.68);
+  background: rgba(255, 248, 232, 0.9);
+  text-align: center;
 }
 
 .npc-info p,
@@ -523,7 +560,7 @@ input {
 
 .npc-info h2 {
   margin-top: 4px;
-  font-size: 42px;
+  font-size: 34px;
   line-height: 1.1;
 }
 
@@ -545,7 +582,8 @@ input {
   left: 20px;
   right: 20px;
   bottom: 20px;
-  min-height: 228px;
+  z-index: 2;
+  min-height: 112px;
   padding: 16px;
   border: 2px solid rgba(63, 45, 31, 0.24);
   border-radius: 8px;
@@ -553,17 +591,27 @@ input {
   box-shadow: 0 14px 34px rgba(56, 38, 21, 0.2);
 }
 
-.audio-focus {
-  position: relative;
+.audio-visualizer {
+  width: min(560px, 100%);
+  justify-self: center;
   z-index: 2;
-  width: min(820px, calc(100% - 48px));
-  margin: 0 auto 112px;
-  padding: 18px;
-  border: 2px solid rgba(141, 47, 37, 0.28);
+  padding: 12px;
+  border: 1px solid rgba(141, 47, 37, 0.22);
   border-radius: 8px;
-  background: rgba(255, 248, 232, 0.86);
-  box-shadow: 0 18px 48px rgba(56, 38, 21, 0.18);
-  backdrop-filter: blur(2px);
+  background: rgba(255, 248, 232, 0.9);
+  box-shadow: 0 16px 40px rgba(56, 38, 21, 0.16);
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.audio-visualizer.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .speaker-line {
@@ -585,7 +633,7 @@ input {
 }
 
 .audio-strip {
-  min-height: 72px;
+  min-height: 58px;
   border-radius: 8px;
   border: 1px solid var(--line);
   background: #2f3e3d;
@@ -597,7 +645,7 @@ input {
 }
 
 .waves {
-  height: 52px;
+  height: 46px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -657,25 +705,6 @@ input {
   background: #f5e2ba;
 }
 
-.spoken {
-  margin-top: 12px;
-  padding: 14px;
-  min-height: 84px;
-  border-radius: 8px;
-  border: 1px solid var(--line);
-  background: rgba(255, 250, 235, 0.72);
-  line-height: 1.75;
-}
-
-.transcript:not(.show) {
-  color: var(--muted);
-  font-style: italic;
-}
-
-.spoken p {
-  margin: 0;
-}
-
 .actions {
   display: grid;
   grid-template-columns: 1fr 1fr 1.25fr;
@@ -683,8 +712,7 @@ input {
   margin-top: 12px;
 }
 
-.answer,
-.hint-box {
+.answer {
   margin: 12px 0 0;
   border-radius: 8px;
   line-height: 1.6;
@@ -694,16 +722,6 @@ input {
   padding: 10px 12px;
   background: rgba(35, 103, 101, 0.12);
   border: 1px solid rgba(35, 103, 101, 0.24);
-}
-
-.hint-box {
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  padding: 11px 12px;
-  background: rgba(141, 47, 37, 0.1);
-  border: 1px solid rgba(141, 47, 37, 0.22);
-  color: #5a251f;
 }
 
 .letter-panel {
@@ -1046,6 +1064,10 @@ textarea:focus {
     min-height: 760px;
   }
 
+  .audio-visualizer {
+    width: min(760px, calc(100% - 36px));
+  }
+
   .letter-drawer {
     transform: translateY(0);
     opacity: 1;
@@ -1074,10 +1096,15 @@ textarea:focus {
     min-height: 820px;
   }
 
+  .audio-visualizer {
+    width: calc(100% - 24px);
+    padding: 12px;
+  }
+
   .npc-scene {
-    inset: 0 0 390px;
+    inset: 18px 0 390px;
     grid-template-columns: 1fr;
-    align-items: start;
+    place-content: start center;
     padding: 18px;
   }
 
